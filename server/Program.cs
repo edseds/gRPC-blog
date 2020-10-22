@@ -22,7 +22,7 @@ namespace server
                 server = new Server()
                 {
                     Services = {
-                        BlogService.BindService(new BlogServiceImpl()),
+                        //BlogService.BindService(new BlogServiceImpl()),
                         ServerReflection.BindService(reflectionServiceImpl)
                     },
                     Ports = { new ServerPort("localhost", Port, ServerCredentials.Insecure) }
