@@ -20,17 +20,33 @@ namespace client
 
             var client = new BlogService.BlogServiceClient(channel);
 
-            //var response = client.CreateBlog(new CreateBlogRequest()
-            //{
-            //    Blog = new Blog.Blog()
-            //    {
-            //        AuthorId = "Edgars",
-            //        Title = "New Blog",
-            //        Content = "Hello, this is my new blog"
-            //    }
-            //});
+            var newBlog = CreateBlog(client);
+            UpdateBlog(client, newBlog);
 
-            //Console.WriteLine("The blog {0} was created", response.Blog.Id);
+
+            channel.ShutdownAsync().Wait();
+            Console.ReadKey();
+        }
+
+        private static Blog.Blog CreateBlog(BlogService.BlogServiceClient client)
+        {
+            var response = client.CreateBlog(new CreateBlogRequest()
+            {
+                Blog = new Blog.Blog()
+                {
+                    AuthorId = "Edgars",
+                    Title = "New Blog",
+                    Content = "Hello, this is my new blog"
+                }
+            });
+
+            Console.WriteLine("The blog {0} was created", response.Blog.Id);
+
+            return response.Blog;
+        }
+
+        private static void ReadBlog(BlogService.BlogServiceClient client)
+        {
             try
             {
                 var response = client.ReadBlog(new ReadBlogRequest()
@@ -45,9 +61,30 @@ namespace client
             {
                 Console.WriteLine(e.Status.Detail);
             }
-
-            channel.ShutdownAsync().Wait();
-            Console.ReadKey();
         }
+
+        private static void UpdateBlog(BlogService.BlogServiceClient client, Blog.Blog blog)
+        {
+            try
+            {
+                blog.AuthorId = "Updated author";
+                blog.Title = "Updated title";
+                blog.Content = "Updated content";
+
+                var resposne = client.UpdateBlog(new UpdateBlogRequest()
+                {
+                    Blog = blog
+                });
+
+                Console.WriteLine("Update the new blog entry");
+                Console.WriteLine(resposne.Blog.ToString());
+
+            }
+            catch (RpcException e)
+            {
+                Console.WriteLine(e.Status.Detail);
+            }
+        }
+
     }
 }
