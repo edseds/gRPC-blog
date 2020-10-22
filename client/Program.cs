@@ -20,13 +20,17 @@ namespace client
 
             var client = new BlogService.BlogServiceClient(channel);
 
-            //var newBlog = CreateBlog(client);
-            //ReadBlog(client);
+            var response = client.CreateBlog(new CreateBlogRequest()
+            {
+                Blog = new Blog.Blog()
+                {
+                    AuthorId = "Edgars",
+                    Title = "New Blog",
+                    Content = "Hello, this is my new blog"
+                }
+            });
 
-            //UpdateBlog(client, newBlog);
-            //DeleteBlog(client, newBlog);
-
-           // await ListBlog(client);
+            Console.WriteLine("The blog {0} was created", response.Blog.Id);
 
             channel.ShutdownAsync().Wait();
             Console.ReadKey();
