@@ -20,17 +20,31 @@ namespace client
 
             var client = new BlogService.BlogServiceClient(channel);
 
-            var response = client.CreateBlog(new CreateBlogRequest()
-            {
-                Blog = new Blog.Blog()
-                {
-                    AuthorId = "Edgars",
-                    Title = "New Blog",
-                    Content = "Hello, this is my new blog"
-                }
-            });
+            //var response = client.CreateBlog(new CreateBlogRequest()
+            //{
+            //    Blog = new Blog.Blog()
+            //    {
+            //        AuthorId = "Edgars",
+            //        Title = "New Blog",
+            //        Content = "Hello, this is my new blog"
+            //    }
+            //});
 
-            Console.WriteLine("The blog {0} was created", response.Blog.Id);
+            //Console.WriteLine("The blog {0} was created", response.Blog.Id);
+            try
+            {
+                var response = client.ReadBlog(new ReadBlogRequest()
+                {
+                    BlogId = ""
+                });
+
+                Console.WriteLine(response.Blog.ToString());
+
+            }
+            catch (RpcException e)
+            {
+                Console.WriteLine(e.Status.Detail);
+            }
 
             channel.ShutdownAsync().Wait();
             Console.ReadKey();
