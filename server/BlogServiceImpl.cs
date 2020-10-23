@@ -44,9 +44,9 @@ namespace server
             var filter = new FilterDefinitionBuilder<BsonDocument>().Eq("_id", new ObjectId(blogId));
             var result = mongoCollection.Find(filter).FirstOrDefault();
 
-            if(result == null)
+            if (result == null)
             {
-                throw new RpcException(new Status(StatusCode.NotFound,string.Format("The blog id {0} wasn't find", blogId)));
+                throw new RpcException(new Status(StatusCode.NotFound, string.Format("The blog id {0} wasn't find", blogId)));
             }
 
             Blog.Blog blog = new Blog.Blog()
@@ -88,5 +88,21 @@ namespace server
 
             return new UpdateBlogResponse() { Blog = blog };
         }
+
+        public override async Task<DeleteBlogResponse> DeleteBlog(DeleteBlogRequest request, ServerCallContext context)
+        {
+            var blogId = request.BlogId;
+            var filter = new FilterDefinitionBuilder<BsonDocument>().Eq("_id", new ObjectId(blogId));
+
+            var result = mongoCollection.DeleteOne(filter);
+
+            if (result.DeletedCount == 0)
+            {
+                throw new RpcException(new Status(StatusCode.NotFound, string.Format("The blog with id {0} wasn't find", blogId)));
+            }
+
+            return new DeleteBlogResponse() { BlogId = blogId };
+        }
+
     }
 }

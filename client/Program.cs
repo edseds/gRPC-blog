@@ -21,8 +21,9 @@ namespace client
             var client = new BlogService.BlogServiceClient(channel);
 
             var newBlog = CreateBlog(client);
-            UpdateBlog(client, newBlog);
+            // UpdateBlog(client, newBlog);
 
+            DeleteBlog(client, newBlog);
 
             channel.ShutdownAsync().Wait();
             Console.ReadKey();
@@ -86,5 +87,21 @@ namespace client
             }
         }
 
+        private static void DeleteBlog(BlogService.BlogServiceClient client, Blog.Blog blog)
+        {
+            try
+            {
+                var response = client.DeleteBlog(new DeleteBlogRequest()
+                {
+                    BlogId = blog.Id
+                });
+
+                Console.WriteLine("The blog with id {0} was deleted", response.BlogId);
+            }
+            catch (RpcException e)
+            {
+                Console.WriteLine(e.Status.Detail);
+            }
+        }
     }
 }
